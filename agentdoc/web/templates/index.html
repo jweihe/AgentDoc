@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuMind - 智能文档解析系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+        }
+        .feature-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: #f8f9fa;
+        }
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: #e3f2fd;
+        }
+        .progress-container {
+            display: none;
+        }
+        .result-container {
+            display: none;
+        }
+        .toc-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .toc-level-1 { margin-left: 0; font-weight: bold; }
+        .toc-level-2 { margin-left: 20px; }
+        .toc-level-3 { margin-left: 40px; }
+        .toc-level-4 { margin-left: 60px; }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-file-text"></i> DocuMind
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#upload">文档上传</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">功能特色</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/docs" target="_blank">API文档</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSystemInfo()">系统状态</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">DocuMind 智能文档解析系统</h1>
+            <p class="lead mb-4">基于先进的多模态AI技术，快速准确地提取PDF文档目录结构</p>
+            <a href="#upload" class="btn btn-light btn-lg">
+                <i class="bi bi-upload"></i> 开始使用
+            </a>
+        </div>
+    </section>
+
+    <!-- 文档上传区域 -->
+    <section id="upload" class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-center mb-4">上传文档</h2>
+                    
+                    <!-- 上传表单 -->
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="uploadForm">
+                                <div class="upload-area" id="uploadArea">
+                                    <i class="bi bi-cloud-upload display-1 text-muted mb-3"></i>
+                                    <h5>拖拽文件到此处或点击选择</h5>
+                                    <p class="text-muted">支持PDF格式，最大100MB</p>
+                                    <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
+                                    <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                        <i class="bi bi-folder2-open"></i> 选择文件
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="modelSelect" class="form-label">选择模型</label>
+                                            <select class="form-select" id="modelSelect">
+                                                <option value="qwen2.5-vl-7b">Qwen2.5-VL-7B</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">处理选项</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="includePages" checked>
+                                                <label class="form-check-label" for="includePages">
+                                                    包含页码信息
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="cpuMode">
+                                                <label class="form-check-label" for="cpuMode">
+                                                    使用CPU模式
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 text-center">
+                                    <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                        <i class="bi bi-play-circle"></i> 开始处理
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- 进度显示 -->
+                    <div class="progress-container mt-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">处理进度</h5>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 0%" id="progressBar"></div>
+                                </div>
+                                <p class="text-muted" id="progressText">准备中...</p>
+                                <div id="fileList"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 结果显示 -->
+                    <div class="result-container mt-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">处理结果</h5>
+                                <div id="resultContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能特色 -->
+    <section id="features" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">功能特色</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-lightning-charge display-4 text-primary mb-3"></i>
+                            <h5 class="card-title">高速处理</h5>
+                            <p class="card-text">基于先进的多模态AI模型，快速准确地识别和提取文档结构</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-bullseye display-4 text-success mb-3"></i>
+                            <h5 class="card-title">高精度识别</h5>
+                            <p class="card-text">支持复杂文档格式，准确识别多层级目录结构和页码信息</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-files display-4 text-info mb-3"></i>
+                            <h5 class="card-title">批量处理</h5>
+                            <p class="card-text">支持多文件同时上传和处理，提高工作效率</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-plugin display-4 text-warning mb-3"></i>
+                            <h5 class="card-title">插件化架构</h5>
+                            <p class="card-text">模块化设计，支持多种模型和处理器的灵活扩展</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-cloud display-4 text-secondary mb-3"></i>
+                            <h5 class="card-title">云端部署</h5>
+                            <p class="card-text">支持Docker容器化部署，易于扩展和维护</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-shield-check display-4 text-danger mb-3"></i>
+                            <h5 class="card-title">安全可靠</h5>
+                            <p class="card-text">本地处理，数据安全有保障，支持多种安全配置</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 系统信息模态框 -->
+    <div class="modal fade" id="systemInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">系统状态</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="systemInfoContent">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 AgentDoc. 基于Agent架构的智能文档分析系统.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentTasks = [];
+        
+        // 文件上传处理
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const uploadForm = document.getElementById('uploadForm');
+            
+            // 拖拽上传
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+            
+            // 点击上传
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+            
+            // 表单提交
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitFiles();
+            });
+            
+            // 加载可用模型
+            loadModels();
+        });
+        
+        function handleFiles(files) {
+            const fileList = Array.from(files).filter(file => file.type === 'application/pdf');
+            if (fileList.length === 0) {
+                alert('请选择PDF文件');
+                return;
+            }
+            
+            // 显示选中的文件
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.innerHTML = `
+                <i class="bi bi-file-earmark-pdf display-1 text-success mb-3"></i>
+                <h5>已选择 ${fileList.length} 个文件</h5>
+                <ul class="list-unstyled">
+                    ${fileList.map(file => `<li><i class="bi bi-file-pdf"></i> ${file.name}</li>`).join('')}
+                </ul>
+                <button type="button" class="btn btn-outline-secondary" onclick="resetUpload()">
+                    <i class="bi bi-arrow-clockwise"></i> 重新选择
+                </button>
+            `;
+            
+            // 保存文件到全局变量
+            window.selectedFiles = fileList;
+        }
+        
+        function resetUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.innerHTML = `
+                <i class="bi bi-cloud-upload display-1 text-muted mb-3"></i>
+                <h5>拖拽文件到此处或点击选择</h5>
+                <p class="text-muted">支持PDF格式，最大100MB</p>
+                <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                    <i class="bi bi-folder2-open"></i> 选择文件
+                </button>
+            `;
+            window.selectedFiles = null;
+        }
+        
+        async function submitFiles() {
+            if (!window.selectedFiles || window.selectedFiles.length === 0) {
+                alert('请先选择文件');
+                return;
+            }
+            
+            const modelName = document.getElementById('modelSelect').value;
+            const includePages = document.getElementById('includePages').checked;
+            const cpuMode = document.getElementById('cpuMode').checked;
+            
+            // 显示进度
+            showProgress();
+            
+            try {
+                if (window.selectedFiles.length === 1) {
+                    // 单文件处理
+                    await processSingleFile(window.selectedFiles[0], modelName, includePages, cpuMode);
+                } else {
+                    // 批量处理
+                    await processBatchFiles(window.selectedFiles, modelName, includePages, cpuMode);
+                }
+            } catch (error) {
+                console.error('处理失败:', error);
+                alert('处理失败: ' + error.message);
+                hideProgress();
+            }
+        }
+        
+        async function processSingleFile(file, modelName, includePages, cpuMode) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('model_name', modelName);
+            formData.append('include_pages', includePages);
+            formData.append('cpu_mode', cpuMode);
+            
+            const response = await fetch('/api/process/pdf', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('上传失败');
+            }
+            
+            const result = await response.json();
+            const taskId = result.task_id;
+            
+            // 轮询任务状态
+            await pollTaskStatus(taskId);
+        }
+        
+        async function processBatchFiles(files, modelName, includePages, cpuMode) {
+            const formData = new FormData();
+            files.forEach(file => formData.append('files', file));
+            formData.append('model_name', modelName);
+            formData.append('include_pages', includePages);
+            formData.append('cpu_mode', cpuMode);
+            formData.append('max_concurrent', '3');
+            
+            const response = await fetch('/api/process/batch', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('上传失败');
+            }
+            
+            const result = await response.json();
+            const taskId = result.task_id;
+            
+            // 轮询任务状态
+            await pollTaskStatus(taskId);
+        }
+        
+        async function pollTaskStatus(taskId) {
+            const maxAttempts = 300; // 5分钟超时
+            let attempts = 0;
+            
+            const poll = async () => {
+                try {
+                    const response = await fetch(`/api/task/${taskId}`);
+                    const task = await response.json();
+                    
+                    updateProgress(task.status, task.progress);
+                    
+                    if (task.status === 'completed') {
+                        showResult(task.result);
+                        return;
+                    } else if (task.status === 'failed') {
+                        throw new Error(task.error || '处理失败');
+                    }
+                    
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(poll, 1000);
+                    } else {
+                        throw new Error('处理超时');
+                    }
+                } catch (error) {
+                    console.error('轮询失败:', error);
+                    alert('处理失败: ' + error.message);
+                    hideProgress();
+                }
+            };
+            
+            poll();
+        }
+        
+        function showProgress() {
+            document.querySelector('.progress-container').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+        }
+        
+        function hideProgress() {
+            document.querySelector('.progress-container').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+        
+        function updateProgress(status, progress) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            let percentage = 0;
+            let text = '';
+            
+            switch (status) {
+                case 'pending':
+                    percentage = 10;
+                    text = '任务已提交，等待处理...';
+                    break;
+                case 'processing':
+                    percentage = progress || 50;
+                    text = '正在处理中...';
+                    break;
+                case 'completed':
+                    percentage = 100;
+                    text = '处理完成！';
+                    break;
+                case 'failed':
+                    percentage = 100;
+                    text = '处理失败';
+                    progressBar.classList.add('bg-danger');
+                    break;
+            }
+            
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = text;
+        }
+        
+        function showResult(result) {
+            hideProgress();
+            
+            const resultContainer = document.querySelector('.result-container');
+            const resultContent = document.getElementById('resultContent');
+            
+            if (Array.isArray(result.results)) {
+                // 批量处理结果
+                resultContent.innerHTML = `
+                    <div class="alert alert-success">
+                        <h6>批量处理完成</h6>
+                        <p>总文件数: ${result.total_files}, 成功: ${result.successful_files}, 失败: ${result.failed_files}</p>
+                        <p>总处理时间: ${result.total_processing_time.toFixed(2)}秒</p>
+                    </div>
+                    ${result.results.map(r => renderSingleResult(r)).join('')}
+                    ${result.errors.length > 0 ? `
+                        <div class="alert alert-warning">
+                            <h6>处理错误</h6>
+                            <ul>
+                                ${result.errors.map(e => `<li>${e.filename}: ${e.error}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+            } else {
+                // 单文件处理结果
+                resultContent.innerHTML = renderSingleResult(result);
+            }
+            
+            resultContainer.style.display = 'block';
+        }
+        
+        function renderSingleResult(result) {
+            return `
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-file-pdf"></i> ${result.filename}
+                            <span class="badge bg-success ms-2">处理时间: ${result.processing_time.toFixed(2)}s</span>
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><strong>总页数:</strong> ${result.total_pages || 'N/A'}</p>
+                                <p><strong>使用模型:</strong> ${result.model_used}</p>
+                                <p><strong>目录项数:</strong> ${result.toc.length}</p>
+                            </div>
+                            <div class="col-md-9">
+                                <h6>目录结构:</h6>
+                                <div class="toc-container" style="max-height: 400px; overflow-y: auto;">
+                                    ${result.toc.map(item => `
+                                        <div class="toc-item toc-level-${item.level}">
+                                            <span class="toc-title">${item.title}</span>
+                                            ${item.page ? `<span class="badge bg-secondary ms-2">${item.page}</span>` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        async function loadModels() {
+            try {
+                const response = await fetch('/api/models');
+                const models = await response.json();
+                
+                const select = document.getElementById('modelSelect');
+                select.innerHTML = models.map(model => 
+                    `<option value="${model.name}">${model.name} ${model.loaded ? '(已加载)' : ''}</option>`
+                ).join('');
+            } catch (error) {
+                console.error('加载模型列表失败:', error);
+            }
+        }
+        
+        async function showSystemInfo() {
+            const modal = new bootstrap.Modal(document.getElementById('systemInfoModal'));
+            modal.show();
+            
+            try {
+                const response = await fetch('/api/system/info');
+                const info = await response.json();
+                
+                document.getElementById('systemInfoContent').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>CPU</h6>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" style="width: ${info.cpu_percent}%">${info.cpu_percent.toFixed(1)}%</div>
+                            </div>
+                            
+                            <h6>内存</h6>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" style="width: ${info.memory_percent}%">
+                                    ${(info.memory_used / 1024 / 1024 / 1024).toFixed(1)}GB / ${(info.memory_total / 1024 / 1024 / 1024).toFixed(1)}GB
+                                </div>
+                            </div>
+                            
+                            <h6>磁盘</h6>
+                            <div class="progress mb-2">
+                                <div class="progress-bar" style="width: ${info.disk_percent}%">
+                                    ${(info.disk_used / 1024 / 1024 / 1024).toFixed(1)}GB / ${(info.disk_total / 1024 / 1024 / 1024).toFixed(1)}GB
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>GPU</h6>
+                            ${info.gpu_available ? `
+                                <p><span class="badge bg-success">可用</span> ${info.gpu_count} 个GPU</p>
+                                ${info.gpu_memory.map(gpu => `
+                                    <p><strong>GPU ${gpu.device}:</strong> ${gpu.name}<br>
+                                    <small>显存: ${(gpu.total_memory / 1024 / 1024 / 1024).toFixed(1)}GB</small></p>
+                                `).join('')}
+                            ` : '<p><span class="badge bg-warning">不可用</span></p>'}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('systemInfoContent').innerHTML = `
+                    <div class="alert alert-danger">
+                        获取系统信息失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
