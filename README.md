@@ -84,11 +84,69 @@ source agentdoc-env/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
+### 🤖 Model Download and Setup
+
+AgentDoc supports Qwen2.5 and Qwen3 series models for local inference. Follow these steps to download and test models:
+
+#### Download Models
+
+```bash
+# List all available models
+python3 download_models.py list
+
+# Download a specific model (recommended: start with smaller models)
+python3 download_models.py download qwen2.5-0.5b-instruct
+
+# Download with ModelScope mirror for faster speed in China
+python3 download_models.py download qwen2.5-7b-instruct --modelscope
+
+# Check download status
+python3 download_models.py status
+```
+
+#### Available Models
+
+**Qwen2.5 Series:**
+| Model | Size | Description | Recommended Use |
+|-------|------|-------------|----------------|
+| qwen2.5-0.5b-instruct | ~1GB | Lightweight version | Testing, development |
+| qwen2.5-1.5b-instruct | ~3GB | Balanced performance | Small-scale production |
+| qwen2.5-3b-instruct | ~6GB | Medium scale | General purpose |
+| qwen2.5-7b-instruct | ~15GB | High performance | Production workloads |
+| qwen2.5-14b-instruct | ~30GB | Large scale | Advanced tasks |
+| qwen2.5-32b-instruct | ~65GB | Very large scale | Complex reasoning |
+| qwen2.5-72b-instruct | ~145GB | Flagship model | Maximum performance |
+
+**Qwen3 Series (Latest Generation):**
+| Model | Size | Description | Recommended Use |
+|-------|------|-------------|----------------|
+| qwen3-0.6b | ~1.2GB | Next-gen ultra-lightweight | Testing, development |
+| qwen3-1.7b | ~3.5GB | Next-gen lightweight | Small-scale production |
+| qwen3-4b | ~8GB | Next-gen medium scale | General purpose |
+| qwen3-8b | ~16GB | Next-gen high performance | Production workloads |
+| qwen3-14b | ~28GB | Next-gen large scale | Advanced tasks |
+| qwen3-32b | ~64GB | Next-gen very large scale | Complex reasoning |
+
+#### Test Downloaded Models
+
+```bash
+# List downloaded models
+python3 test_model.py list
+
+# Test a specific model
+python3 test_model.py test qwen2.5-0.5b-instruct
+
+# Test with custom prompt
+python3 test_model.py test qwen2.5-0.5b-instruct --prompt "你好，请介绍一下你自己"
+```
+
 ### Basic Usage
 
 ```python
-from agentdoc import ModelManager, PDFProcessor
-from agentdoc.qa import QAEngine, DocumentIndexer
+from models.manager import ModelManager
+from processors.text_processor import PDFProcessor
+from qa.engine import QAEngine
+from qa.indexer import DocumentIndexer
 
 # Initialize components
 model_manager = ModelManager()
@@ -110,6 +168,31 @@ result = qa_engine.answer_question(
 
 print(f"Answer: {result.answer}")
 print(f"Citations: {result.citations}")
+```
+
+#### Using Local Qwen Models
+
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+# Load downloaded model
+model_path = "models/downloads/qwen2.5-7b-instruct"
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    torch_dtype=torch.float16,
+    device_map="auto",
+    trust_remote_code=True
+)
+
+# Generate response
+prompt = "请解释一下人工智能的基本概念。"
+inputs = tokenizer(prompt, return_tensors="pt")
+with torch.no_grad():
+    outputs = model.generate(**inputs, max_length=200, do_sample=True, temperature=0.7)
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(response)
 ```
 
 ## 📁 Project Architecture
@@ -340,7 +423,7 @@ plugin_manager.register_plugin("custom", CustomProcessor())
 
 ```python
 from agentdoc.processors import BatchProcessor
-from agentdoc.queue import TaskQueue
+from task_queue import TaskQueue
 
 # Batch processing
 batch_processor = BatchProcessor()

@@ -252,7 +252,7 @@ plugin_manager.register_plugin("custom", CustomProcessor())
 
 ```python
 from processors import BatchProcessor
-from queue import TaskQueue
+from task_queue import TaskQueue
 
 # 批量处理
 batch_processor = BatchProcessor()
@@ -304,4 +304,91 @@ pytest
 # 运行特定模块测试
 python test_qa_module.py
 python test_plugins.py
+```
+
+### 🤖 Model Download and Setup
+
+AgentDoc supports Qwen2.5 and Qwen3 series models for local inference. Follow these steps to download and test models:
+
+#### Download Models
+
+```bash
+# List all available models
+python3 download_models.py list
+
+# Download a specific model (recommended: start with smaller models)
+python3 download_models.py download qwen2.5-0.5b-instruct
+
+# Download with ModelScope mirror for faster speed in China
+python3 download_models.py download qwen2.5-7b-instruct --modelscope
+
+# Check download status
+python3 download_models.py status
+```
+
+#### Available Models
+
+**Qwen2.5 Series:**
+| Model | Size | Description | Recommended Use |
+|-------|------|-------------|----------------|
+| qwen2.5-0.5b-instruct | ~1GB | Lightweight version | Testing, development |
+| qwen2.5-1.5b-instruct | ~3GB | Balanced performance | Small-scale production |
+| qwen2.5-3b-instruct | ~6GB | Medium scale | General purpose |
+| qwen2.5-7b-instruct | ~15GB | High performance | Production workloads |
+| qwen2.5-14b-instruct | ~30GB | Large scale | Advanced tasks |
+| qwen2.5-32b-instruct | ~65GB | Very large scale | Complex reasoning |
+| qwen2.5-72b-instruct | ~145GB | Flagship model | Maximum performance |
+
+**Qwen3 Series (Latest Generation):**
+| Model | Size | Description | Recommended Use |
+|-------|------|-------------|----------------|
+| qwen3-0.6b | ~1.2GB | Next-gen ultra-lightweight | Testing, development |
+| qwen3-1.7b | ~3.5GB | Next-gen lightweight | Small-scale production |
+| qwen3-4b | ~8GB | Next-gen medium scale | General purpose |
+| qwen3-8b | ~16GB | Next-gen high performance | Production workloads |
+| qwen3-14b | ~28GB | Next-gen large scale | Advanced tasks |
+| qwen3-32b | ~64GB | Next-gen very large scale | Complex reasoning |
+
+#### Test Downloaded Models
+
+```bash
+# List downloaded models
+python3 test_model.py list
+
+# Test a specific model
+python3 test_model.py test qwen2.5-0.5b-instruct
+
+# Test with custom prompt
+python3 test_model.py test qwen2.5-0.5b-instruct --prompt "Hello, please introduce yourself"
+```
+
+#### Using Local Qwen Models
+
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+# Load model and tokenizer
+model_path = "models/downloads/qwen2.5-0.5b-instruct"
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# Generate response
+prompt = "Hello, how can I help you today?"
+inputs = tokenizer(prompt, return_tensors="pt")
+with torch.no_grad():
+    outputs = model.generate(
+        inputs.input_ids,
+        max_length=512,
+        temperature=0.7,
+        do_sample=True,
+        pad_token_id=tokenizer.eos_token_id
+    )
+
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(response)
 ```
