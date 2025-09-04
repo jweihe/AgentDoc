@@ -1,366 +1,278 @@
-# AgentDoc - Intelligent Document Analysis System
+# AgentDoc - 智能文档分析系统
 
-[中文版本](README.md) | English Version
+[English Version](README.md) | 中文版本
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Stars](https://img.shields.io/github/stars/jweihe/AgentDoc?style=social)](https://github.com/jweihe/AgentDoc)
-[![GitHub Forks](https://img.shields.io/github/forks/jweihe/AgentDoc?style=social)](https://github.com/jweihe/AgentDoc)
 
-## Project Overview
+## 项目简介
 
-AgentDoc is a production-ready, lightweight intelligent document analysis system designed for enterprise-grade document processing, intelligent Q&A, and content retrieval. Built with a modular architecture, it provides seamless integration capabilities, precise citation management, and advanced reasoning functionalities for modern AI applications.
+AgentDoc 是一个轻量级、高效的智能文档分析系统，专注于文档解析、智能问答和内容检索。系统采用模块化架构设计，支持多种文档格式处理，提供精确的引用管理和智能推理功能。
 
-## 🚀 Core Features
+## 核心特性
 
-### 🤖 **Advanced Intelligent Q&A**
-- **Context-Aware Understanding**: Deep comprehension of document context with multi-turn conversation support
-- **Complex Query Processing**: Handle sophisticated questions requiring cross-document reasoning
-- **Multi-Language Support**: Native support for Chinese, English, and other major languages
-- **Confidence Scoring**: Provides reliability scores for generated answers
+- 🤖 **智能问答**: 基于文档内容的精确问答，支持上下文理解和推理
+- 📍 **精确引用**: 自动标注答案来源，提供准确的文档位置引用
+- 🚀 **多模型支持**: 灵活的模型管理系统，支持多种语言模型
+- 📄 **文档处理**: 支持PDF、DOCX等多种文档格式的智能解析
+- 🔧 **模块化架构**: 可扩展的插件系统和处理器架构
+- 🔍 **智能检索**: 高效的文档索引和检索系统
+- 📊 **任务队列**: 支持异步任务处理和批量操作
+- ⚡ **轻量高效**: 优化的性能和资源使用
 
-### 📍 **Precision Citation System**
-- **Source Traceability**: Automatic annotation of answer sources with exact document locations
-- **Multi-Format References**: Support for page numbers, line numbers, and section references
-- **Citation Validation**: Ensures accuracy and reliability of all citations
-- **Export Compatibility**: Generate citations in academic formats (APA, MLA, Chicago)
+## 快速开始
 
-### 🚀 **Enterprise Model Management**
-- **Multi-Model Architecture**: Seamless integration with OpenAI, Anthropic, local models, and custom APIs
-- **Dynamic Model Switching**: Runtime model selection based on task requirements
-- **Performance Optimization**: Intelligent caching and request batching
-- **Cost Management**: Built-in usage tracking and cost optimization
-
-### 📄 **Advanced Document Processing**
-- **Universal Format Support**: PDF, DOCX, TXT, Markdown, HTML, and more
-- **OCR Integration**: Extract text from scanned documents and images
-- **Structure Recognition**: Intelligent parsing of tables, headers, and document hierarchy
-- **Metadata Extraction**: Automatic extraction of document properties and annotations
-
-### 🔧 **Production-Ready Architecture**
-- **Plugin Ecosystem**: Extensible architecture with hot-swappable components
-- **Microservices Ready**: Docker support with horizontal scaling capabilities
-- **API-First Design**: RESTful APIs with comprehensive documentation
-- **Configuration Management**: Environment-based configuration with validation
-
-### 🔍 **High-Performance Retrieval**
-- **Vector Search**: Advanced semantic search with embedding models
-- **Hybrid Retrieval**: Combines keyword and semantic search for optimal results
-- **Real-time Indexing**: Incremental updates without full reindexing
-- **Search Analytics**: Query performance monitoring and optimization
-
-### 📊 **Scalable Task Management**
-- **Async Processing**: Non-blocking task execution with queue management
-- **Batch Operations**: Efficient processing of large document collections
-- **Progress Tracking**: Real-time status updates and completion notifications
-- **Error Handling**: Robust retry mechanisms and failure recovery
-
-### ⚡ **Performance & Reliability**
-- **Memory Optimization**: Efficient memory usage for large document processing
-- **Caching Strategy**: Multi-level caching for improved response times
-- **Monitoring Integration**: Built-in metrics and health checks
-- **Production Logging**: Structured logging with configurable levels
-
-## Quick Start
-
-### Requirements
+### 环境要求
 
 - Python 3.8+
-- Virtual environment recommended
+- 推荐使用虚拟环境
 
-### Installation
+### 安装
 
 ```bash
-# Clone the repository
+# 克隆项目
 git clone https://github.com/jweihe/AgentDoc.git
 cd AgentDoc
 
-# Create virtual environment
+# 创建虚拟环境
 python -m venv agentdoc-env
 source agentdoc-env/bin/activate  # Linux/Mac
-# or agentdoc-env\Scripts\activate  # Windows
+# 或 agentdoc-env\Scripts\activate  # Windows
 
-# Install dependencies
+# 安装依赖
 pip install -r requirements.txt
 ```
 
-### Basic Usage
+### 基本使用
 
 ```python
 from agentdoc import ModelManager, PDFProcessor
 from agentdoc.qa import QAEngine, DocumentIndexer
 
-# Initialize components
+# 初始化组件
 model_manager = ModelManager()
 pdf_processor = PDFProcessor()
 qa_engine = QAEngine()
 
-# Process document
+# 处理文档
 document = pdf_processor.process("document.pdf")
 
-# Build index
+# 建立索引
 indexer = DocumentIndexer()
 chunks = indexer.index_document(document)
 
-# Intelligent Q&A
+# 智能问答
 result = qa_engine.answer_question(
-    question="What is the main content of the document?",
+    question="文档的主要内容是什么？",
     chunks=chunks
 )
 
-print(f"Answer: {result.answer}")
-print(f"Citations: {result.citations}")
+print(f"答案: {result.answer}")
+print(f"引用: {result.citations}")
 ```
 
-## 📁 Project Architecture
+## 项目结构
 
 ```
 AgentDoc/
-├── agentdoc/                    # 🏗️ Core Application Package
-│   ├── core/                    # 🔧 Foundation Layer
-│   │   ├── config.py            #   ⚙️ Configuration management
-│   │   ├── logger.py            #   📝 Structured logging system
-│   │   └── exceptions.py        #   🚨 Custom exception handling
-│   ├── models/                  # 🤖 AI Model Integration
-│   │   ├── manager.py           #   🎯 Unified model management
-│   │   ├── factory.py           #   🏭 Dynamic model instantiation
-│   │   └── base.py              #   📋 Model interface definitions
-│   ├── processors/              # 📄 Document Processing Engine
-│   │   ├── text_processor.py    #   📝 Text extraction & cleaning
-│   │   ├── batch_processor.py   #   📦 Bulk document processing
-│   │   └── factory.py           #   🔄 Processor selection logic
-│   ├── qa/                      # 🧠 Intelligent Q&A System
-│   │   ├── engine.py            #   🎯 Main Q&A orchestration
-│   │   ├── indexer.py           #   🗂️ Document indexing & chunking
-│   │   ├── retriever.py         #   🔍 Semantic & keyword search
-│   │   ├── reasoning.py         #   🤔 Logic reasoning engine
-│   │   └── citation.py          #   📚 Citation management
-│   ├── plugins/                 # 🔌 Extensibility Framework
-│   │   ├── manager.py           #   🎛️ Plugin lifecycle management
-│   │   ├── base.py              #   📐 Plugin interface standards
-│   │   ├── model_plugins.py     #   🤖 Model integration plugins
-│   │   └── processor_plugins.py #   📄 Document processor plugins
-│   ├── queue/                   # ⚡ Async Task Management
-│   │   ├── manager.py           #   📋 Task orchestration
-│   │   ├── worker.py            #   👷 Background task execution
-│   │   └── base.py              #   🏗️ Queue abstractions
-│   ├── agents/                  # 🤖 Intelligent Agent System
-│   │   └── document_agent.py    #   📖 Document analysis agents
-│   ├── prompts/                 # 💬 Prompt Engineering
-│   │   ├── manager.py           #   🎭 Prompt template management
-│   │   ├── qa_prompts.py        #   ❓ Q&A specific prompts
-│   │   ├── code_prompts.py      #   💻 Code analysis prompts
-│   │   └── advanced_prompts.py  #   🚀 Complex reasoning prompts
-│   ├── web/                     # 🌐 Web Interface
-│   │   └── templates/           #   🎨 HTML templates
-│   ├── api/                     # 🔗 RESTful API Layer
-│   │   ├── routes.py            #   🛣️ API endpoint definitions
-│   │   └── models.py            #   📊 API data models
-│   ├── cli/                     # 💻 Command Line Interface
-│   │   └── main.py              #   ⌨️ CLI entry point
-│   └── utils/                   # 🛠️ Utility Functions
-│       ├── text_analyzer.py     #   📊 Text analysis utilities
-│       └── document_enhancer.py #   ✨ Document enhancement tools
-├── tests/                       # 🧪 Comprehensive Test Suite
-│   ├── unit/                    #   🔬 Unit tests
-│   ├── integration/             #   🔗 Integration tests
-│   └── e2e/                     #   🎯 End-to-end tests
-├── docs/                        # 📚 Documentation
-│   ├── api/                     #   🔗 API documentation
-│   ├── guides/                  #   📖 User guides
-│   └── examples/                #   💡 Usage examples
-├── docker/                      # 🐳 Containerization
-│   ├── Dockerfile               #   📦 Production container
-│   └── docker-compose.yml       #   🎼 Multi-service orchestration
-├── scripts/                     # 🔧 Development & Deployment
-│   ├── setup.sh                 #   🚀 Environment setup
-│   └── deploy.sh                #   📤 Deployment automation
-├── requirements.txt             # 📋 Python dependencies
-├── pyproject.toml               # ⚙️ Project configuration
-├── .env.example                 # 🔐 Environment variables template
-└── README.md                    # 📖 Project documentation
+├── agentdoc/              # 主包
+│   ├── core/              # 核心模块 (配置、日志、异常处理)
+│   ├── models/            # 模型管理 (模型工厂、管理器)
+│   ├── processors/        # 文档处理器 (PDF、批量处理)
+│   ├── qa/                # 智能问答 (引擎、索引、检索、推理)
+│   ├── plugins/           # 插件系统 (可扩展处理器)
+│   ├── queue/             # 任务队列 (异步任务管理)
+│   ├── agents/            # Agent模块 (智能代理)
+│   ├── prompts/           # 提示模板 (预定义提示)
+│   ├── web/               # Web界面
+│   ├── api/               # API服务
+│   └── cli/               # 命令行工具
+├── tests/                 # 测试代码
+├── requirements.txt       # 项目依赖
+├── pyproject.toml         # 项目配置
+└── README.md              # 项目文档
 ```
 
-## Core Module Description
+## 核心模块说明
 
-### 🧠 QA Module (agentdoc.qa)
-Core engine of the intelligent Q&A system, built on RAG (Retrieval-Augmented Generation) architecture
+### 🧠 QA模块 (agentdoc.qa)
+智能问答系统的核心引擎，采用RAG (Retrieval-Augmented Generation) 架构
 
-- **QAEngine**: Intelligent Q&A Engine
-  - Multi-turn dialogue and context understanding
-  - Integrated vector retrieval and semantic matching
-  - Complex query decomposition and rewriting
-  - Confidence scoring and answer quality assessment
+- **QAEngine**: 智能问答引擎
+  - 支持多轮对话和上下文理解
+  - 集成向量检索和语义匹配
+  - 支持复杂查询分解和重写
+  - 提供置信度评分和答案质量评估
 
-- **DocumentIndexer**: High-Performance Document Indexer
-  - Semantic indexing based on vector databases
-  - Incremental indexing and real-time updates
-  - Multi-level indexing strategy: chapter, paragraph, sentence levels
-  - Intelligent document chunking and overlap processing
+- **DocumentIndexer**: 高性能文档索引器
+  - 基于向量数据库的语义索引
+  - 支持增量索引和实时更新
+  - 多级索引策略：章节级、段落级、句子级
+  - 智能文档分块和重叠处理
 
-- **DocumentRetriever**: Precision Document Retriever
-  - Hybrid retrieval strategy: Vector retrieval + BM25 + Re-ranking
-  - Multi-modal retrieval support (text, images, tables)
-  - Dynamic retrieval strategy adjustment
-  - Result deduplication and aggregation
+- **DocumentRetriever**: 精准文档检索器
+  - 混合检索策略：向量检索 + BM25 + 重排序
+  - 支持多模态检索（文本、图片、表格）
+  - 动态检索策略调整
+  - 检索结果去重和聚合
 
-- **CitationManager**: Intelligent Citation Manager
-  - Automatic generation of precise page and paragraph citations
-  - Multiple citation format support (APA, MLA, Chicago, etc.)
-  - Citation chain tracking and verification
-  - Batch citation export functionality
+- **CitationManager**: 智能引用管理器
+  - 自动生成精确的页码和段落引用
+  - 支持多种引用格式（APA、MLA、Chicago等）
+  - 引用链追踪和验证
+  - 批量引用导出功能
 
-- **SimpleReasoner**: Logic Reasoning Engine
-  - Causal reasoning and logic chain construction
-  - Multi-step reasoning with intermediate result caching
-  - Reasoning path visualization and explanation
-  - Hypothesis verification and counter-argument support
+- **SimpleReasoner**: 逻辑推理引擎
+  - 支持因果推理和逻辑链构建
+  - 多步推理和中间结果缓存
+  - 推理路径可视化和解释
+  - 支持假设验证和反驳论证
 
-### 🤖 Models Module (agentdoc.models)
-Enterprise-grade model management and scheduling system
+### 🤖 Models模块 (agentdoc.models)
+企业级模型管理和调度系统
 
-- **ModelManager**: Unified Model Manager
-  - Support for multiple LLMs: OpenAI, Claude, Qwen, GLM, etc.
-  - Model load balancing and failover
-  - Real-time performance monitoring and cost tracking
-  - Model version management and A/B testing
+- **ModelManager**: 统一模型管理器
+  - 支持多种LLM：OpenAI、Claude、Qwen、GLM等
+  - 模型负载均衡和故障转移
+  - 实时性能监控和成本统计
+  - 模型版本管理和A/B测试
 
-- **ModelFactory**: Intelligent Model Factory
-  - Dynamic model instantiation and configuration
-  - Automatic model capability detection and matching
-  - Model composition and cascaded calling support
-  - Model caching and warm-up mechanisms
+- **ModelFactory**: 智能模型工厂
+  - 动态模型实例化和配置
+  - 模型能力自动检测和匹配
+  - 支持模型组合和级联调用
+  - 模型缓存和预热机制
 
-- **BaseModel**: Unified Model Interface
-  - Standardized API interface design
-  - Streaming output and batch processing support
-  - Built-in retry mechanisms and error handling
-  - Model call chain tracing
+- **BaseModel**: 统一模型接口
+  - 标准化API接口设计
+  - 支持流式输出和批量处理
+  - 内置重试机制和错误处理
+  - 模型调用链路追踪
 
-### 🔌 Plugins Module (agentdoc.plugins)
-Extensible plugin ecosystem
+### 🔌 Plugins模块 (agentdoc.plugins)
+可扩展的插件生态系统
 
-- **PluginManager**: Plugin Lifecycle Manager
-  - Hot-swappable plugin loading and unloading
-  - Plugin dependency management and version control
-  - Plugin security sandbox and permission control
-  - Plugin performance monitoring and resource limiting
+- **PluginManager**: 插件生命周期管理器
+  - 热插拔插件加载和卸载
+  - 插件依赖管理和版本控制
+  - 插件安全沙箱和权限控制
+  - 插件性能监控和资源限制
 
-- **BasePlugin**: Plugin Development Framework
-  - Standardized plugin interface and lifecycle
-  - Plugin configuration management and parameter validation
-  - Inter-plugin communication and event mechanisms
-  - Plugin error handling and logging
+- **BasePlugin**: 插件开发框架
+  - 标准化插件接口和生命周期
+  - 插件配置管理和参数验证
+  - 插件间通信和事件机制
+  - 插件错误处理和日志记录
 
-- **ProcessorPlugin**: Document Processing Plugin
-  - Custom document format parsing support
-  - Document preprocessing and postprocessing pipelines
-  - Multi-language document processing support
-  - Document quality assessment and optimization
+- **ProcessorPlugin**: 文档处理插件
+  - 支持自定义文档格式解析
+  - 文档预处理和后处理管道
+  - 多语言文档处理支持
+  - 文档质量评估和优化
 
-### ⚡ Queue Module (agentdoc.queue)
-High-performance asynchronous task processing system
+### ⚡ Queue模块 (agentdoc.queue)
+高性能异步任务处理系统
 
-- **TaskQueue**: Distributed Task Queue
-  - Support for Redis, RabbitMQ and other message queues
-  - Task prioritization and delayed execution
-  - Task deduplication and idempotency guarantee
-  - Dead letter queue and task retry mechanisms
+- **TaskQueue**: 分布式任务队列
+  - 支持Redis、RabbitMQ等消息队列
+  - 任务优先级和延迟执行
+  - 任务去重和幂等性保证
+  - 死信队列和任务重试机制
 
-- **TaskManager**: Task Scheduling Manager
-  - Full lifecycle task tracking
-  - Dynamic worker process scaling
-  - Task execution statistics and performance analysis
-  - Task dependency management and batch operations
+- **TaskManager**: 任务调度管理器
+  - 任务生命周期全程跟踪
+  - 动态工作进程扩缩容
+  - 任务执行统计和性能分析
+  - 任务依赖管理和批量操作
 
-- **Worker**: Efficient Task Executor
-  - Multi-process/multi-thread concurrent execution
-  - Task execution environment isolation
-  - Resource usage monitoring and limiting
-  - Task execution logging and error tracking
+- **Worker**: 高效任务执行器
+  - 多进程/多线程并发执行
+  - 任务执行环境隔离
+  - 资源使用监控和限制
+  - 任务执行日志和错误追踪
 
-### 📄 Processors Module (agentdoc.processors)
-Multi-format document processing engine
+### 📄 Processors模块 (agentdoc.processors)
+多格式文档处理引擎
 
-- **PDFProcessor**: Professional PDF Document Processor
-  - High-precision text extraction and layout analysis
-  - Table, image, and formula recognition
-  - OCR integration and text recognition
-  - Document structuring and metadata extraction
+- **PDFProcessor**: PDF文档专业处理器
+  - 高精度文本提取和版面分析
+  - 表格、图片、公式识别
+  - OCR集成和文字识别
+  - 文档结构化和元数据提取
 
-- **BatchProcessor**: Batch Processing Scheduler
-  - Large-scale document parallel processing
-  - Real-time processing progress monitoring
-  - Error recovery and checkpoint resume
-  - Processing result statistics and reporting
+- **BatchProcessor**: 批量处理调度器
+  - 大规模文档并行处理
+  - 处理进度实时监控
+  - 错误恢复和断点续传
+  - 处理结果统计和报告
 
-### 🎯 Agents Module (agentdoc.agents)
-Intelligent agents and automation system
+### 🎯 Agents模块 (agentdoc.agents)
+智能代理和自动化系统
 
-- **DocumentAgent**: Document Intelligence Agent
-  - Automatic document analysis and summary generation
-  - Document quality assessment and improvement suggestions
-  - Multi-document correlation analysis and comparison
-  - Document knowledge graph construction
+- **DocumentAgent**: 文档智能代理
+  - 自动文档分析和摘要生成
+  - 文档质量评估和改进建议
+  - 多文档关联分析和对比
+  - 文档知识图谱构建
 
-### 🌐 Web Module (agentdoc.web)
-Modern web interface
+### 🌐 Web模块 (agentdoc.web)
+现代化Web界面
 
-- **WebUI**: Responsive User Interface
-  - Drag-and-drop document upload and management
-  - Real-time Q&A and result display
-  - Visual analysis and chart presentation
-  - Multi-user collaboration and permission management
+- **WebUI**: 响应式用户界面
+  - 拖拽式文档上传和管理
+  - 实时问答和结果展示
+  - 可视化分析和图表展示
+  - 多用户协作和权限管理
 
-### 🔧 Utils Module (agentdoc.utils)
-Common utilities and auxiliary functions
+### 🔧 Utils模块 (agentdoc.utils)
+通用工具和辅助功能
 
-- **ConfigManager**: Configuration Manager
-- **Logger**: Structured Logging System
-- **FileHandler**: File Operation Tools
-- **TextProcessor**: Text Processing Tools
+- **ConfigManager**: 配置管理器
+- **Logger**: 结构化日志系统
+- **FileHandler**: 文件操作工具
+- **TextProcessor**: 文本处理工具
 
-## Advanced Usage
+## 高级用法
 
-### Custom Plugin Development
+### 自定义插件开发
 
 ```python
 from agentdoc.plugins import BasePlugin, PluginManager
 
 class CustomProcessor(BasePlugin):
     def process(self, document):
-        # Custom processing logic
+        # 自定义处理逻辑
         return processed_document
 
-# Register plugin
+# 注册插件
 plugin_manager = PluginManager()
 plugin_manager.register_plugin("custom", CustomProcessor())
 ```
 
-### Batch Document Processing
+### 批量文档处理
 
 ```python
 from agentdoc.processors import BatchProcessor
 from agentdoc.queue import TaskQueue
 
-# Batch processing
+# 批量处理
 batch_processor = BatchProcessor()
 task_queue = TaskQueue()
 
-# Add tasks
+# 添加任务
 for pdf_file in pdf_files:
     task_queue.add_task("process_pdf", {"file_path": pdf_file})
 
-# Execute batch processing
+# 执行批量处理
 results = batch_processor.process_batch(task_queue)
 ```
 
-### Configuration Management
+### 配置管理
 
 ```python
 from agentdoc.core import Settings
 
-# Custom configuration
+# 自定义配置
 settings = Settings(
     model_name="qwen2.5",
     max_chunk_size=1000,
@@ -369,50 +281,28 @@ settings = Settings(
 )
 ```
 
-## Development Guide
+## 开发指南
 
-### Environment Setup
+### 环境设置
 
 ```bash
-# Install development dependencies
+# 安装开发依赖
 pip install pytest black flake8
 
-# Code formatting
+# 代码格式化
 black agentdoc/
 
-# Code linting
+# 代码检查
 flake8 agentdoc/
 ```
 
-### Running Tests
+### 运行测试
 
 ```bash
-# Run all tests
+# 运行所有测试
 pytest
 
-# Run specific module tests
+# 运行特定模块测试
 python test_qa_module.py
 python test_plugins.py
 ```
-
-### Contributing Guidelines
-
-1. Fork the project
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-MIT License - See [LICENSE](LICENSE) file for details
-
-## Contact
-
-- Project Homepage: [GitHub Repository](https://github.com/jweihe/AgentDoc)
-- Issue Reporting: [Issues](https://github.com/jweihe/AgentDoc/issues)
-- Email: team@agentdoc.ai
-
----
-
-[中文版本](README.md) | English Version
