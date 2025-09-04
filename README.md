@@ -493,7 +493,6 @@ MIT License - See [LICENSE](LICENSE) file for details
 
 - Project Homepage: [GitHub Repository](https://github.com/jweihe/AgentDoc)
 - Issue Reporting: [Issues](https://github.com/jweihe/AgentDoc/issues)
-- Email: team@agentdoc.ai
 
 ---
 
