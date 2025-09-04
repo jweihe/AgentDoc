@@ -116,51 +116,50 @@ print(f"Citations: {result.citations}")
 
 ```
 AgentDoc/
-├── agentdoc/                    # 🏗️ Core Application Package
-│   ├── core/                    # 🔧 Foundation Layer
-│   │   ├── config.py            #   ⚙️ Configuration management
-│   │   ├── logger.py            #   📝 Structured logging system
-│   │   └── exceptions.py        #   🚨 Custom exception handling
-│   ├── models/                  # 🤖 AI Model Integration
-│   │   ├── manager.py           #   🎯 Unified model management
-│   │   ├── factory.py           #   🏭 Dynamic model instantiation
-│   │   └── base.py              #   📋 Model interface definitions
-│   ├── processors/              # 📄 Document Processing Engine
-│   │   ├── text_processor.py    #   📝 Text extraction & cleaning
-│   │   ├── batch_processor.py   #   📦 Bulk document processing
-│   │   └── factory.py           #   🔄 Processor selection logic
-│   ├── qa/                      # 🧠 Intelligent Q&A System
-│   │   ├── engine.py            #   🎯 Main Q&A orchestration
-│   │   ├── indexer.py           #   🗂️ Document indexing & chunking
-│   │   ├── retriever.py         #   🔍 Semantic & keyword search
-│   │   ├── reasoning.py         #   🤔 Logic reasoning engine
-│   │   └── citation.py          #   📚 Citation management
-│   ├── plugins/                 # 🔌 Extensibility Framework
-│   │   ├── manager.py           #   🎛️ Plugin lifecycle management
-│   │   ├── base.py              #   📐 Plugin interface standards
-│   │   ├── model_plugins.py     #   🤖 Model integration plugins
-│   │   └── processor_plugins.py #   📄 Document processor plugins
-│   ├── queue/                   # ⚡ Async Task Management
-│   │   ├── manager.py           #   📋 Task orchestration
-│   │   ├── worker.py            #   👷 Background task execution
-│   │   └── base.py              #   🏗️ Queue abstractions
-│   ├── agents/                  # 🤖 Intelligent Agent System
-│   │   └── document_agent.py    #   📖 Document analysis agents
-│   ├── prompts/                 # 💬 Prompt Engineering
-│   │   ├── manager.py           #   🎭 Prompt template management
-│   │   ├── qa_prompts.py        #   ❓ Q&A specific prompts
-│   │   ├── code_prompts.py      #   💻 Code analysis prompts
-│   │   └── advanced_prompts.py  #   🚀 Complex reasoning prompts
-│   ├── web/                     # 🌐 Web Interface
-│   │   └── templates/           #   🎨 HTML templates
-│   ├── api/                     # 🔗 RESTful API Layer
-│   │   ├── routes.py            #   🛣️ API endpoint definitions
-│   │   └── models.py            #   📊 API data models
-│   ├── cli/                     # 💻 Command Line Interface
-│   │   └── main.py              #   ⌨️ CLI entry point
-│   └── utils/                   # 🛠️ Utility Functions
-│       ├── text_analyzer.py     #   📊 Text analysis utilities
-│       └── document_enhancer.py #   ✨ Document enhancement tools
+├── core/                        # 🔧 Foundation Layer
+│   ├── config.py                #   ⚙️ Configuration management
+│   ├── logger.py                #   📝 Structured logging system
+│   └── exceptions.py            #   🚨 Custom exception handling
+├── models/                      # 🤖 AI Model Integration
+│   ├── manager.py               #   🎯 Unified model management
+│   ├── factory.py               #   🏭 Dynamic model instantiation
+│   └── base.py                  #   📋 Model interface definitions
+├── processors/                  # 📄 Document Processing Engine
+│   ├── text_processor.py        #   📝 Text extraction & cleaning
+│   ├── batch_processor.py       #   📦 Bulk document processing
+│   └── factory.py               #   🔄 Processor selection logic
+├── qa/                          # 🧠 Intelligent Q&A System
+│   ├── engine.py                #   🎯 Main Q&A orchestration
+│   ├── indexer.py               #   🗂️ Document indexing & chunking
+│   ├── retriever.py             #   🔍 Semantic & keyword search
+│   ├── reasoning.py             #   🤔 Logic reasoning engine
+│   └── citation.py              #   📚 Citation management
+├── plugins/                     # 🔌 Extensibility Framework
+│   ├── manager.py               #   🎛️ Plugin lifecycle management
+│   ├── base.py                  #   📐 Plugin interface standards
+│   ├── model_plugins.py         #   🤖 Model integration plugins
+│   └── processor_plugins.py     #   📄 Document processor plugins
+├── queue/                       # ⚡ Async Task Management
+│   ├── manager.py               #   📋 Task orchestration
+│   ├── worker.py                #   👷 Background task execution
+│   └── base.py                  #   🏗️ Queue abstractions
+├── agents/                      # 🤖 Intelligent Agent System
+│   └── document_agent.py        #   📖 Document analysis agents
+├── prompts/                     # 💬 Prompt Engineering
+│   ├── manager.py               #   🎭 Prompt template management
+│   ├── qa_prompts.py            #   ❓ Q&A specific prompts
+│   ├── code_prompts.py          #   💻 Code analysis prompts
+│   └── advanced_prompts.py      #   🚀 Complex reasoning prompts
+├── web/                         # 🌐 Web Interface
+│   └── templates/               #   🎨 HTML templates
+├── api/                         # 🔗 RESTful API Layer
+│   ├── routes.py                #   🛣️ API endpoint definitions
+│   └── models.py                #   📊 API data models
+├── cli/                         # 💻 Command Line Interface
+│   └── main.py                  #   ⌨️ CLI entry point
+├── utils/                       # 🛠️ Utility Functions
+│   ├── text_analyzer.py         #   📊 Text analysis utilities
+│   └── document_enhancer.py     #   ✨ Document enhancement tools
 ├── tests/                       # 🧪 Comprehensive Test Suite
 │   ├── unit/                    #   🔬 Unit tests
 │   ├── integration/             #   🔗 Integration tests

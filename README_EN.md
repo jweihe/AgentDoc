@@ -75,18 +75,17 @@ print(f"引用: {result.citations}")
 
 ```
 AgentDoc/
-├── agentdoc/              # 主包
-│   ├── core/              # 核心模块 (配置、日志、异常处理)
-│   ├── models/            # 模型管理 (模型工厂、管理器)
-│   ├── processors/        # 文档处理器 (PDF、批量处理)
-│   ├── qa/                # 智能问答 (引擎、索引、检索、推理)
-│   ├── plugins/           # 插件系统 (可扩展处理器)
-│   ├── queue/             # 任务队列 (异步任务管理)
-│   ├── agents/            # Agent模块 (智能代理)
-│   ├── prompts/           # 提示模板 (预定义提示)
-│   ├── web/               # Web界面
-│   ├── api/               # API服务
-│   └── cli/               # 命令行工具
+├── core/                  # 核心模块 (配置、日志、异常处理)
+├── models/                # 模型管理 (模型工厂、管理器)
+├── processors/            # 文档处理器 (PDF、批量处理)
+├── qa/                    # 智能问答 (引擎、索引、检索、推理)
+├── plugins/               # 插件系统 (可扩展处理器)
+├── queue/                 # 任务队列 (异步任务管理)
+├── agents/                # Agent模块 (智能代理)
+├── prompts/               # 提示模板 (预定义提示)
+├── web/                   # Web界面
+├── api/                   # API服务
+├── cli/                   # 命令行工具
 ├── tests/                 # 测试代码
 ├── requirements.txt       # 项目依赖
 ├── pyproject.toml         # 项目配置
@@ -128,7 +127,7 @@ AgentDoc/
   - 推理路径可视化和解释
   - 支持假设验证和反驳论证
 
-### 🤖 Models模块 (agentdoc.models)
+### 🤖 Models模块 (models)
 企业级模型管理和调度系统
 
 - **ModelManager**: 统一模型管理器
@@ -149,7 +148,7 @@ AgentDoc/
   - 内置重试机制和错误处理
   - 模型调用链路追踪
 
-### 🔌 Plugins模块 (agentdoc.plugins)
+### 🔌 Plugins模块 (plugins)
 可扩展的插件生态系统
 
 - **PluginManager**: 插件生命周期管理器
@@ -170,7 +169,7 @@ AgentDoc/
   - 多语言文档处理支持
   - 文档质量评估和优化
 
-### ⚡ Queue模块 (agentdoc.queue)
+### ⚡ Queue模块 (queue)
 高性能异步任务处理系统
 
 - **TaskQueue**: 分布式任务队列
@@ -191,7 +190,7 @@ AgentDoc/
   - 资源使用监控和限制
   - 任务执行日志和错误追踪
 
-### 📄 Processors模块 (agentdoc.processors)
+### 📄 Processors模块 (processors)
 多格式文档处理引擎
 
 - **PDFProcessor**: PDF文档专业处理器
@@ -206,7 +205,7 @@ AgentDoc/
   - 错误恢复和断点续传
   - 处理结果统计和报告
 
-### 🎯 Agents模块 (agentdoc.agents)
+### 🎯 Agents模块 (agents)
 智能代理和自动化系统
 
 - **DocumentAgent**: 文档智能代理
@@ -215,7 +214,7 @@ AgentDoc/
   - 多文档关联分析和对比
   - 文档知识图谱构建
 
-### 🌐 Web模块 (agentdoc.web)
+### 🌐 Web模块 (web)
 现代化Web界面
 
 - **WebUI**: 响应式用户界面
@@ -224,7 +223,7 @@ AgentDoc/
   - 可视化分析和图表展示
   - 多用户协作和权限管理
 
-### 🔧 Utils模块 (agentdoc.utils)
+### 🔧 Utils模块 (utils)
 通用工具和辅助功能
 
 - **ConfigManager**: 配置管理器
@@ -237,7 +236,7 @@ AgentDoc/
 ### 自定义插件开发
 
 ```python
-from agentdoc.plugins import BasePlugin, PluginManager
+from plugins import BasePlugin, PluginManager
 
 class CustomProcessor(BasePlugin):
     def process(self, document):
@@ -252,8 +251,8 @@ plugin_manager.register_plugin("custom", CustomProcessor())
 ### 批量文档处理
 
 ```python
-from agentdoc.processors import BatchProcessor
-from agentdoc.queue import TaskQueue
+from processors import BatchProcessor
+from queue import TaskQueue
 
 # 批量处理
 batch_processor = BatchProcessor()
@@ -270,7 +269,7 @@ results = batch_processor.process_batch(task_queue)
 ### 配置管理
 
 ```python
-from agentdoc.core import Settings
+from core import Settings
 
 # 自定义配置
 settings = Settings(
@@ -290,10 +289,10 @@ settings = Settings(
 pip install pytest black flake8
 
 # 代码格式化
-black agentdoc/
+black .
 
 # 代码检查
-flake8 agentdoc/
+flake8 .
 ```
 
 ### 运行测试
