@@ -1,5 +1,7 @@
 # AgentDoc - 智能文档分析系统
 
+中文版本 | [English Version](README_EN.md)
+
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -33,9 +35,9 @@ git clone https://github.com/jweihe/AgentDoc.git
 cd AgentDoc
 
 # 创建虚拟环境
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# 或 venv\Scripts\activate  # Windows
+python -m venv agentdoc-env
+source agentdoc-env/bin/activate  # Linux/Mac
+# 或 agentdoc-env\Scripts\activate  # Windows
 
 # 安装依赖
 pip install -r requirements.txt
@@ -93,27 +95,142 @@ AgentDoc/
 
 ## 核心模块说明
 
-### QA模块 (agentdoc.qa)
-- **QAEngine**: 智能问答引擎，支持复杂问题处理
-- **DocumentIndexer**: 文档索引器，建立高效的文档索引
-- **DocumentRetriever**: 文档检索器，精确检索相关内容
-- **CitationManager**: 引用管理器，自动生成准确引用
-- **SimpleReasoner**: 推理器，支持逻辑推理和分析
+### 🧠 QA模块 (agentdoc.qa)
+智能问答系统的核心引擎，采用RAG (Retrieval-Augmented Generation) 架构
 
-### Models模块 (agentdoc.models)
-- **ModelManager**: 模型管理器，统一管理各种语言模型
-- **ModelFactory**: 模型工厂，动态创建模型实例
-- **BaseModel**: 模型基类，定义统一接口
+- **QAEngine**: 智能问答引擎
+  - 支持多轮对话和上下文理解
+  - 集成向量检索和语义匹配
+  - 支持复杂查询分解和重写
+  - 提供置信度评分和答案质量评估
 
-### Plugins模块 (agentdoc.plugins)
-- **PluginManager**: 插件管理器，支持动态加载插件
-- **BasePlugin**: 插件基类，定义插件接口
-- **ProcessorPlugin**: 处理器插件，扩展文档处理能力
+- **DocumentIndexer**: 高性能文档索引器
+  - 基于向量数据库的语义索引
+  - 支持增量索引和实时更新
+  - 多级索引策略：章节级、段落级、句子级
+  - 智能文档分块和重叠处理
 
-### Queue模块 (agentdoc.queue)
-- **TaskQueue**: 任务队列，支持异步任务处理
-- **TaskManager**: 任务管理器，管理任务生命周期
-- **Worker**: 工作进程，执行具体任务
+- **DocumentRetriever**: 精准文档检索器
+  - 混合检索策略：向量检索 + BM25 + 重排序
+  - 支持多模态检索（文本、图片、表格）
+  - 动态检索策略调整
+  - 检索结果去重和聚合
+
+- **CitationManager**: 智能引用管理器
+  - 自动生成精确的页码和段落引用
+  - 支持多种引用格式（APA、MLA、Chicago等）
+  - 引用链追踪和验证
+  - 批量引用导出功能
+
+- **SimpleReasoner**: 逻辑推理引擎
+  - 支持因果推理和逻辑链构建
+  - 多步推理和中间结果缓存
+  - 推理路径可视化和解释
+  - 支持假设验证和反驳论证
+
+### 🤖 Models模块 (agentdoc.models)
+企业级模型管理和调度系统
+
+- **ModelManager**: 统一模型管理器
+  - 支持多种LLM：OpenAI、Claude、Qwen、GLM等
+  - 模型负载均衡和故障转移
+  - 实时性能监控和成本统计
+  - 模型版本管理和A/B测试
+
+- **ModelFactory**: 智能模型工厂
+  - 动态模型实例化和配置
+  - 模型能力自动检测和匹配
+  - 支持模型组合和级联调用
+  - 模型缓存和预热机制
+
+- **BaseModel**: 统一模型接口
+  - 标准化API接口设计
+  - 支持流式输出和批量处理
+  - 内置重试机制和错误处理
+  - 模型调用链路追踪
+
+### 🔌 Plugins模块 (agentdoc.plugins)
+可扩展的插件生态系统
+
+- **PluginManager**: 插件生命周期管理器
+  - 热插拔插件加载和卸载
+  - 插件依赖管理和版本控制
+  - 插件安全沙箱和权限控制
+  - 插件性能监控和资源限制
+
+- **BasePlugin**: 插件开发框架
+  - 标准化插件接口和生命周期
+  - 插件配置管理和参数验证
+  - 插件间通信和事件机制
+  - 插件错误处理和日志记录
+
+- **ProcessorPlugin**: 文档处理插件
+  - 支持自定义文档格式解析
+  - 文档预处理和后处理管道
+  - 多语言文档处理支持
+  - 文档质量评估和优化
+
+### ⚡ Queue模块 (agentdoc.queue)
+高性能异步任务处理系统
+
+- **TaskQueue**: 分布式任务队列
+  - 支持Redis、RabbitMQ等消息队列
+  - 任务优先级和延迟执行
+  - 任务去重和幂等性保证
+  - 死信队列和任务重试机制
+
+- **TaskManager**: 任务调度管理器
+  - 任务生命周期全程跟踪
+  - 动态工作进程扩缩容
+  - 任务执行统计和性能分析
+  - 任务依赖管理和批量操作
+
+- **Worker**: 高效任务执行器
+  - 多进程/多线程并发执行
+  - 任务执行环境隔离
+  - 资源使用监控和限制
+  - 任务执行日志和错误追踪
+
+### 📄 Processors模块 (agentdoc.processors)
+多格式文档处理引擎
+
+- **PDFProcessor**: PDF文档专业处理器
+  - 高精度文本提取和版面分析
+  - 表格、图片、公式识别
+  - OCR集成和文字识别
+  - 文档结构化和元数据提取
+
+- **BatchProcessor**: 批量处理调度器
+  - 大规模文档并行处理
+  - 处理进度实时监控
+  - 错误恢复和断点续传
+  - 处理结果统计和报告
+
+### 🎯 Agents模块 (agentdoc.agents)
+智能代理和自动化系统
+
+- **DocumentAgent**: 文档智能代理
+  - 自动文档分析和摘要生成
+  - 文档质量评估和改进建议
+  - 多文档关联分析和对比
+  - 文档知识图谱构建
+
+### 🌐 Web模块 (agentdoc.web)
+现代化Web界面
+
+- **WebUI**: 响应式用户界面
+  - 拖拽式文档上传和管理
+  - 实时问答和结果展示
+  - 可视化分析和图表展示
+  - 多用户协作和权限管理
+
+### 🔧 Utils模块 (agentdoc.utils)
+通用工具和辅助功能
+
+- **ConfigManager**: 配置管理器
+- **Logger**: 结构化日志系统
+- **FileHandler**: 文件操作工具
+- **TextProcessor**: 文本处理工具
 
 ## 高级用法
 
@@ -189,25 +306,3 @@ pytest
 python test_qa_module.py
 python test_plugins.py
 ```
-
-### 贡献指南
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开 Pull Request
-
-## 许可证
-
-MIT License - 详见 [LICENSE](LICENSE) 文件
-
-## 联系方式
-
-- 项目主页: [GitHub Repository](https://github.com/jweihe/AgentDoc)
-- 问题反馈: [Issues](https://github.com/jweihe/AgentDoc/issues)
-- 邮箱: team@agentdoc.ai
-
----
-
-中文版本 | [English Version](README_EN.md)
